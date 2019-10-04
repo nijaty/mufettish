@@ -1,13 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser
+)
 
 
 # Create your models here.
-
-class BaseUser(models.Model):
-    position = models.ManyToManyField(Position)
-    company = models.ManyToManyField(Company)
-
-
 class Position(models.Model):
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,6 +12,28 @@ class Position(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=255)
+    about = models.TextField
+    picture = models.ImageField
+    location = models.CharField(max_length=255)
+    website = models.URLField(max_length=255)
+    positions = models.ManyToManyField(Position)
+    employer_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class BaseUser(AbstractBaseUser):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    profile_picture = models.ImageField
+    e_mail = models.EmailField(max_length=255)
+    position = models.ManyToManyField(Position)
+    company = models.ManyToManyField(Company)
 
 
 class Feedback(models.Model):
@@ -54,16 +73,3 @@ class Form(models.Model):
 
     def __str__(self):
         return f"{self.title}"
-
-
-class Company(models.Model):
-    name = models.CharField(max_length=255)
-    about = models.TextField
-    picture = models.ImageField
-    location = models.CharField(max_length=255)
-    website = models.URLField(max_length=255)
-    positions = models.ManyToManyField(Position)
-    employer_count = models.IntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.name}"
